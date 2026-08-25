@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <title>Maps Directory Crawler — Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <h1>Data Tempat</h1>
+      <span id="statusChip" class="chip idle">idle</span>
+      <span id="live" class="live" hidden><i></i>live</span>
+    </div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Tampilan">
+        <button id="viewTable" class="on" aria-pressed="true">Tabel</button>
+        <button id="viewCard" aria-pressed="false">Kartu</button>
+      </div>
+      <button id="toggleAnalytics" class="ghost" title="Tampilkan/sembunyikan analitik visual">📊 Analitik</button>
+      <button id="enrich" class="primary">Lengkapi kontak</button>
+      <button id="emails">Cari email & sosial</button>
+      <button id="stop" disabled>Berhenti</button>
+
+      <div class="dropdown">
+        <button id="btnExportMenu" class="ghost">Export ▾</button>
+        <div class="dropdown-content">
+          <button id="csv">Export CSV</button>
+          <button id="excel">Export Excel (.xls)</button>
+          <button id="json">Export JSON</button>
+          <button id="copy">Salin (TSV)</button>
+          <hr />
+          <button id="copyEmails">Salin Semua Email</button>
+          <button id="copyPhones">Salin Semua Telepon</button>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button id="btnMoreMenu" class="ghost">Alat ⚙ ▾</button>
+        <div class="dropdown-content">
+          <button id="dedupe">Bersihkan Duplikat</button>
+          <button id="clear" class="danger">Hapus semua data</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="runBar" class="runbar" hidden>
+    <div class="runhead">
+      <span id="runMsg"></span>
+      <span id="runPct" class="pct"></span>
+    </div>
+    <div class="bar"><div id="fill"></div></div>
+  </section>
+
+  <section id="analyticsPanel" class="analytics-panel" hidden>
+    <div class="analytics-grid">
+      <div class="analytics-card">
+        <h4>Funnel CRM Status</h4>
+        <div id="analyticsFunnel" class="chart-bars"></div>
+      </div>
+      <div class="analytics-card">
+        <h4>Kategori Terbanyak</h4>
+        <div id="analyticsCategories" class="chart-bars"></div>
+      </div>
+      <div class="analytics-card">
+        <h4>Kelengkapan Kontak</h4>
+        <div id="analyticsCompleteness" class="chart-bars"></div>
+      </div>
+      <div class="analytics-card">
+        <h4>Distribusi Rating</h4>
+        <div id="analyticsRating" class="chart-bars"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><span id="sTotal">0</span><label>Tempat</label></div>
+    <div class="stat"><span id="sPhone">0</span><label>Ada telepon</label></div>
+    <div class="stat"><span id="sSite">0</span><label>Ada website</label></div>
+    <div class="stat warn"><span id="sNoSite">0</span><label>Tanpa website</label></div>
+    <div class="stat"><span id="sEmail">0</span><label>Ada email</label></div>
+    <div class="stat"><span id="sSocial">0</span><label>Ada sosial</label></div>
+    <div class="stat"><span id="sIncomplete">0</span><label>Belum lengkap</label></div>
+  </section>
+
+  <section class="filters">
+    <input id="q" type="search" placeholder="Cari nama, alamat, kategori, telepon, email, tag…" />
+    <select id="session" title="Sesi crawl"><option value="all">Semua sesi</option></select>
+    <select id="fWebsite">
+      <option value="all">Website: semua</option>
+      <option value="no">Tanpa website</option>
+      <option value="yes">Ada website</option>
+    </select>
+    <select id="fPhone">
+      <option value="all">Telepon: semua</option>
+      <option value="no">Tanpa telepon</option>
+      <option value="yes">Ada telepon</option>
+    </select>
+    <select id="fStatus">
+      <option value="all">Status: semua</option>
+      <option value="none">Belum ditandai</option>
+      <option value="baru">Baru</option>
+      <option value="dihubungi">Dihubungi</option>
+      <option value="followup">Follow-up</option>
+      <option value="deal">Deal</option>
+      <option value="tolak">Tidak tertarik</option>
+    </select>
+    <select id="fEmail">
+      <option value="all">Email: semua</option>
+      <option value="yes">Ada email</option>
+      <option value="no">Tanpa email</option>
+    </select>
+    <select id="fSocial">
+      <option value="all">Sosial: semua</option>
+      <option value="yes">Ada sosial media</option>
+      <option value="no">Tanpa sosial media</option>
+    </select>
+    <select id="fRating">
+      <option value="all">Rating: semua</option>
+      <option value="lt4">&lt; 4,0</option>
+      <option value="gte4">≥ 4,0</option>
+      <option value="gte45">≥ 4,5</option>
+      <option value="none">Tanpa rating</option>
+    </select>
+    <select id="sort">
+      <option value="default">Urutan asli</option>
+      <option value="name">Nama A–Z</option>
+      <option value="rating">Rating tertinggi</option>
+      <option value="reviews">Review terbanyak</option>
+      <option value="category">Kategori A–Z</option>
+    </select>
+    <button id="reset" class="ghost" hidden>Reset filter</button>
+    <span id="shown" class="shown"></span>
+  </section>
+
+  <div id="tableWrap" class="tablewrap">
+    <table id="tbl">
+      <thead>
+        <tr>
+          <th class="c-chk"><input type="checkbox" id="selectAll" title="Pilih semua baris di halaman ini" /></th>
+          <th class="c-name sortable" data-sort="name">Nama <span class="sort-icon"></span></th>
+          <th class="sortable" data-sort="category">Kategori <span class="sort-icon"></span></th>
+          <th class="num sortable" data-sort="rating">Rating <span class="sort-icon"></span></th>
+          <th>Alamat</th>
+          <th>Telepon</th>
+          <th>Website</th>
+          <th>Email & Sosial</th>
+          <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
+          <th>Catatan & Tag</th>
+          <th class="c-act"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div id="cardWrap" class="cardwrap" hidden></div>
+
+  <p id="empty" class="empty" hidden></p>
+
+  <nav id="pager" class="pager" hidden>
+    <button id="pFirst" title="Halaman pertama">«</button>
+    <button id="pPrev">‹ Sebelumnya</button>
+    <span id="pInfo" class="pinfo"></span>
+    <button id="pNext">Berikutnya ›</button>
+    <button id="pLast" title="Halaman terakhir">»</button>
+    <select id="perPage" title="Baris per halaman">
+      <option value="25">25 / hal</option>
+      <option value="50" selected>50 / hal</option>
+      <option value="100">100 / hal</option>
+      <option value="250">250 / hal</option>
+    </select>
+  </nav>
+
+  <!-- Floating Batch Actions Bar -->
+  <div id="batchBar" class="batch-bar" hidden>
+    <span id="batchCount" class="batch-count">0 terpilih</span>
+    <select id="batchStatusSel">
+      <option value="">Ubah status massal…</option>
+      <option value="baru">Baru</option>
+      <option value="dihubungi">Dihubungi</option>
+      <option value="followup">Follow-up</option>
+      <option value="deal">Deal</option>
+      <option value="tolak">Tidak tertarik</option>
+    </select>
+    <button id="batchExport" class="ghost">Export Terpilih</button>
+    <button id="batchDelete" class="danger ghost">Hapus Terpilih</button>
+    <button id="batchCancel" class="ghost">Batal</button>
+  </div>
+
+  <!-- Quick Detail Drawer Modal -->
+  <div id="drawerOverlay" class="drawer-overlay" hidden></div>
+  <aside id="drawerModal" class="drawer" hidden>
+    <div class="drawer-header">
+      <h2 id="dName">Nama Tempat</h2>
+      <button id="dClose" class="drawer-close">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <div id="dBadges" class="drawer-badges"></div>
+      
+      <div class="drawer-actions">
+        <a id="dBtnWa" class="btn-action wa" target="_blank" hidden>💬 WhatsApp</a>
+        <a id="dBtnCall" class="btn-action call" target="_blank" hidden>📞 Telepon</a>
+        <a id="dBtnSite" class="btn-action site" target="_blank" hidden>🌐 Website</a>
+        <a id="dBtnMap" class="btn-action map" target="_blank" hidden>📍 Google Maps</a>
+        <a id="dBtnEmail" class="btn-action mail" target="_blank" hidden>✉️ Email</a>
+      </div>
+
+      <div class="drawer-section">
+        <h3>Informasi Kontak</h3>
+        <div class="drawer-row"><b>Alamat:</b> <span id="dAddr">—</span></div>
+        <div class="drawer-row"><b>Telepon:</b> <span id="dPhone">—</span></div>
+        <div class="drawer-row"><b>Website:</b> <span id="dWebsite">—</span></div>
+        <div class="drawer-row"><b>Email:</b> <span id="dEmail">—</span></div>
+        <div class="drawer-row"><b>Media Sosial:</b> <div id="dSocials">—</div></div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>Lokasi & Jam Buka</h3>
+        <div class="drawer-row"><b>Plus Code:</b> <span id="dPlusCode">—</span></div>
+        <div class="drawer-row"><b>Koordinat:</b> <span id="dCoords">—</span></div>
+        <div class="drawer-row"><b>Jam Buka:</b> <div id="dHours" class="hours-box">—</div></div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>Manajemen CRM</h3>
+        <div class="drawer-row">
+          <b>Status:</b>
+          <div id="dStatusWrap"></div>
+        </div>
+        <div class="drawer-row">
+          <b>Catatan:</b>
+          <textarea id="dNote" class="drawer-textarea" placeholder="Tulis catatan prospek di sini…"></textarea>
+        </div>
+        <div class="drawer-row">
+          <b>Tag Kustom:</b>
+          <input id="dTags" type="text" class="drawer-input" placeholder="Pisahkan dengan koma (mis: VIP, Target Q3)" />
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script src="export.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>

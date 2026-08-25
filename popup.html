@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <title>Maps Directory Crawler</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <h1>Maps Directory Crawler</h1>
+    <p class="hint">Buka hasil pencarian di Google Maps, lalu klik Mulai.</p>
+  </header>
+
+  <section class="opts">
+    <label class="row">
+      <span>Maks. tempat</span>
+      <input id="maxResults" type="number" min="1" max="500" value="120" />
+    </label>
+    <label class="row">
+      <span>Jeda detail (ms)</span>
+      <input id="detailDelay" type="number" min="400" max="8000" step="100" value="1200" />
+    </label>
+    <label class="row check">
+      <input id="withDetail" type="checkbox" checked />
+      <span>Ambil kontak (telepon, website, jam buka)</span>
+    </label>
+  </section>
+
+  <section class="actions">
+    <button id="start" class="primary">Mulai</button>
+    <button id="stop" disabled>Berhenti</button>
+  </section>
+
+  <button id="dash" class="wide">Lihat Dashboard →</button>
+
+  <section class="status">
+    <div class="statline">
+      <span id="badge" class="badge idle">idle</span>
+      <span id="count">0 tempat</span>
+    </div>
+    <div class="bar"><div id="fill"></div></div>
+    <p id="message" class="msg"></p>
+    <details id="errBox" hidden>
+      <summary>Kendala (<span id="errCount">0</span>)</summary>
+      <ul id="errList"></ul>
+    </details>
+  </section>
+
+  <section class="export">
+    <div class="grid">
+      <button id="csv">CSV</button>
+      <button id="excel">Excel</button>
+      <button id="json">JSON</button>
+      <button id="copy">Salin</button>
+    </div>
+    <div class="row webhook">
+      <input id="webhookUrl" type="url" placeholder="https://endpoint-anda/webhook" />
+      <button id="send">Kirim</button>
+    </div>
+    <button id="clear" class="danger wide-btn">Hapus semua data</button>
+  </section>
+
+  <script src="export.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

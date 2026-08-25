@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "Maps Directory Crawler",
+  "description": "Crawl daftar tempat dari Google Maps ke dashboard lokal: nama, rating, kategori, alamat, telepon, website, jam buka, dan koordinat.",
+  "version": "1.3.0",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "tabs",
+    "scripting",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "*://www.google.com/maps/*",
+    "*://www.google.co.id/maps/*",
+    "*://maps.google.com/*"
+  ],
+  "optional_host_permissions": [
+    "*://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Maps Directory Crawler",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://www.google.com/maps/*",
+        "*://www.google.co.id/maps/*",
+        "*://maps.google.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "email.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
