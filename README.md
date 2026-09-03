@@ -1,144 +1,201 @@
 # Maps Directory Crawler
 
-Chrome Extension (Manifest V3) untuk memanen daftar tempat dari hasil pencarian Google Maps.
+Chrome Extension (Manifest V3) untuk memanen daftar tempat dari hasil pencarian Google Maps menjadi prospek bisnis siap kontak, dilengkapi dengan analisis peluang lead otomatis, CRM ringan, ekstraksi email & media sosial, serta analitik visual.
+
+![Maps Directory Crawler - Dashboard Table View](docs/screenshots/dashboard-table.png)
+
+---
+
+## Fitur Utama
+
+- ⚡ **In-Page Detail Click (Ultra-Fast)** — Membuka panel detail Google Maps langsung di panel samping tanpa reload tab. Scraping kontak menjadi **4x–5x lebih cepat** (hanya ~0,6–0,8 detik/tempat).
+- 🌐 **Bilingual UI (ID / EN)** — Mendukung Bahasa Indonesia dan English secara instan dengan peristilahan modern dan natural.
+- 🎯 **Radar Peluang Lead (Opportunity Scoring)** — Mengklasifikasikan prospek secara otomatis (Web Pitch, Reputation Fix, High Value Lead, Outreach Ready) beserta **Lead Score (0–100)**.
+- 📊 **Analitik Visual (5 Bagan Statistik)** — Visualisasi sebaran peluang, funnel status CRM, kategori teratas, tingkat kelengkapan kontak, dan distribusi rating.
+- 📑 **Quick Detail Drawer** — Panel samping informatif dengan tombol cepat WhatsApp, Telepon, Google Maps, editor Catatan & Tag kustom, jam buka, koordinat, dan waktu scrape presisi.
+- 📌 **Sticky Table Header & Sticky Pagination** — Header tabel tetap terkunci di atas dan pagination menempel rapi di bagian bawah, hanya baris data yang bergulir.
+- 📥 **Import & Backup/Restore (CSV/JSON)** — Unggah kembali file CSV atau file backup database JSON dengan opsi Smart Merge atau Replace All (Restore).
+- 🧹 **Pembersih Duplikat (Deduplicate)** — Menggabungkan otomatis entri ganda yang memiliki nomor telepon sama.
+- ⏱️ **Tracking Waktu (`scrapedAt`)** — Riwayat tanggal dan jam kapan tempat di-scrape secara presisi tercatat di database dan seluruh format export.
+
+---
 
 ## Pasang
 
-1. Buka `chrome://extensions`
-2. Aktifkan **Developer mode** (kanan atas)
-3. **Load unpacked** → pilih folder `gmaps-crawler`
+1. Buka `chrome://extensions` di Google Chrome.
+2. Aktifkan **Developer mode** (di pojok kanan atas).
+3. Klik **Load unpacked** → pilih folder `gmaps-crawler`.
 
-## Pakai
+## Cara Mengoperasikan di Google Maps
 
-1. Buka Google Maps, cari sesuatu (mis. `kafe di Bandung`) sampai daftar hasil muncul di panel kiri.
-2. Klik ikon extension.
-3. Atur **Maks. tempat** dan **Jeda detail**, lalu klik **Mulai**.
-4. Klik **Lihat Dashboard →** untuk melihat hasil dalam tabel.
+Ikuti alur pengoperasian berikut saat berada di Google Maps:
 
-> Biarkan tab Maps tetap terbuka selama crawl — extension mengendalikan tab itu untuk membuka tiap tempat. Popup boleh ditutup; crawl jalan terus di background.
+```
+[Buka Google Maps & Cari] ➔ [Klik Ikon Ekstensi] ➔ [Atur Target & Klik Mulai] ➔ [In-Page Click Detail Otomatis] ➔ [Buka Dashboard]
+```
 
-## Dashboard
+1. **Lakukan Pencarian di Google Maps**:
+   - Buka **[maps.google.com](https://www.google.com/maps)**.
+   - Ketik kata kunci bisnis sasaran Anda (contoh: `kafe di senopati jakarta`, `klinik gigi bandung`, `restoran surabaya`).
+   - Tekan Enter sampai daftar tempat muncul di **panel sebelah kiri** Google Maps.
+2. **Buka Popup Ekstensi**:
+   - Klik ikon **Maps Directory Crawler** di toolbar Chrome (kanan atas browser).
+   - Atur **Maks. tempat** (misal: `30` atau `50`).
+   - Biarkan **Jeda detail** di angka `800` ms (sudah sangat pas dan natural).
+   - Pastikan centang **Ambil kontak (telepon, web, jam)** aktif.
+3. **Klik Mulai**:
+   - Sistem akan langsung mengendalikan tab Google Maps secara otomatis:
+     - **Fase 1 (Kumpul List)**: Script men-scroll panel hasil kiri untuk memuat tempat-tempat baru.
+     - **Fase 2 (In-Page Click Detail ⚡)**: Script mengklik kartu tempat satu demi satu di panel kiri tanpa reload tab. Panel detail kanan Google Maps terbuka instan (~0,6 detik/tempat) untuk membaca nomor telepon, website, jam buka, foto, dan koordinat.
+4. **Pantau Live di Dashboard**:
+   - Klik tombol **Lihat Dashboard →** di popup kapan saja. Progres scraping berjalan secara live:
 
-Tombol **Lihat Dashboard →** di popup membuka tab berisi seluruh data tersimpan:
+![Live Crawling Progress di Dashboard](docs/screenshots/live-crawl.png)
 
-- **Dua tampilan** — **Tabel** (padat, untuk memindai banyak baris) dan **Kartu** (lapang, enak dibaca satu per satu). Pilihan tersimpan.
-- **Radar Peluang Lead (Lead Opportunity Scoring)** — Analisis otomatis profil prospek untuk mengidentifikasi peluang bisnis:
-  - 🌐 **Butuh Website (Web Pitch)**: Bisnis aktif / rating bagus tapi belum punya website (target agensi web / digital).
-  - 🛡️ **Perlu Reputasi (Rep Fix)**: Rating < 4,0 dengan ulasan aktif (target konsultan kepuasan pelanggan / review management).
-  - ⭐ **High Value Lead**: Rating ≥ 4,5 dan ulasan ≥ 50 (bisnis mapan, potensi budget besar).
-  - ⚡ **Kontak Siap (Outreach Ready)**: Nomor telepon dan email terverifikasi, siap dihubungi secara omnichannel.
-  - 📈 **Lead Score (0–100)**: Skor potensi bisnis berdasarkan kelengkapan kontak, kredibilitas rating, dan jumlah ulasan.
-- **Import & Backup/Restore (CSV/JSON)** — Unggah kembali file CSV atau JSON:
-  - **Smart Merge**: Menggabungkan data tempat tanpa menimpa catatan atau status CRM yang sudah ada.
-  - **Restore Database**: Memulihkan database lengkap dari file cadangan JSON (`.json`).
-  - **Backup Database**: Mengunduh seluruh basis data dan riwayat sesi dalam satu klik.
-- **Analitik Visual (📊 Analitik)** — 5 grafik visual: Radar Peluang Lead, Funnel CRM status, Top Kategori, Kelengkapan Kontak, dan Distribusi Rating.
-- **Multi-select & Batch Actions** — Pilih beberapa baris (checkbox) untuk ubah status massal, hapus massal, atau export terpilih.
-- **Quick Detail Drawer** — Klik nama tempat untuk membuka panel slide-over dengan tombol cepat WhatsApp, Telepon, Google Maps, editor Catatan & Tag kustom, serta ringkasan Skor Peluang.
-- **Modern UI & Toast Notifications** — Antarmuka berkelas dengan efek glassmorphism, badge peluang dinamis, animasi halus, dan notifikasi toast non-intrusif.
-- **Ekstraksi Media Sosial** — Otomatis memanen akun **Instagram, WhatsApp (`wa.me`), Facebook, LinkedIn, TikTok, X** saat pencarian email.
-- **Pembersih Duplikat (Deduplicate)** — Menggabungkan otomatis tempat yang memiliki nomor telepon sama.
-- **Pagination & Sorting Header** — 25 / 50 / 100 / 250 baris per halaman. Klik header kolom (Peluang, Nama, Rating, Kategori, Status) atau urutkan berdasarkan Skor Peluang Tertinggi.
-- **Statistik & Filter Lengkap** — Total tempat, peluang butuh website, kontak siap, telepon, website, email, sosial, rating, status CRM.
-- **Export Serbaguna** — Export ke **CSV, Excel (.xls), JSON, TSV**, mencakup kolom `opportunity` dan `leadScore`, serta tombol khusus **Salin Semua Email** & **Salin Semua Telepon**.
+> 💡 **Tips Pengoperasian:**
+> - Biarkan tab Google Maps tetap terbuka selama proses scraping berlangsung.
+> - Jendela kecil popup ekstensi boleh Anda tutup, crawl akan terus berjalan di background service worker.
+> - Untuk mencoba dashboard tanpa membuka Google Maps, Anda dapat membuka `dashboard.html?running=1` untuk melihat simulasi crawl interaktif.
 
-### Realtime
+---
 
-Saat crawl berjalan, dashboard menampilkan barisnya **sambil** proses berlangsung — tidak perlu menunggu selesai:
+## Dashboard Pro & Galeri Fitur
 
-- Badge **live** berkedip di samping status
-- Progress bar: indeterminate saat fase kumpul (total belum diketahui), persentase saat fase detail
-- Baris yang **sedang diproses** disorot dengan garis biru
-- Baris baru muncul dengan animasi masuk
+Tombol **Lihat Dashboard →** di popup membuka dashboard interaktif lengkap:
 
-Halaman yang sedang Anda buka **tidak akan lompat** saat data baru masuk — baris baru ditambahkan di akhir, jadi posisi baca Anda aman. Dashboard juga hanya merender ulang saat ada perubahan nyata, supaya tidak berkedip dan fokus ketikan di kotak cari tidak hilang.
+### 1. Tampilan Tabel & Kartu (Table & Cards View)
+Mendukung dua mode tampilan dengan preferensi tersimpan di storage lokal:
+- **Tabel**: Tampilan padat dengan header sticky kontras tinggi, zebra striping, dan tombol sort kolom.
+- **Kartu**: Tampilan kartu visual yang lapang dan nyaman dibaca satu per satu.
 
-Saat pertama dibuka, tabel menampilkan skeleton loading sampai data siap.
+![Tampilan Kartu (Cards View)](docs/screenshots/cards-view.png)
 
-### Cari email & sosial media
+---
 
-Tombol **Cari email & sosial (N)** membuka website tiap tempat di tab tersembunyi, lalu mencari alamat email serta akun media sosial di halaman depan dan `/contact`, `/kontak`, `/about`. Berhenti begitu ketemu.
+### 2. Radar Peluang Lead (Lead Opportunity Scoring)
+Analisis otomatis setiap profil prospek berdasarkan kelengkapan digital:
+- 🌐 **Butuh Website (Web Pitch)**: Bisnis aktif / rating bagus tapi belum memiliki website (target agensi web / digital marketing).
+- 🛡️ **Perlu Reputasi (Rep Fix)**: Rating < 4,0 dengan ulasan aktif (target konsultan reputasi / customer satisfaction).
+- ⭐ **High Value Lead**: Rating ≥ 4,5 dan ulasan banyak (bisnis mapan, potensi anggaran besar).
+- ⚡ **Kontak Siap (Outreach Ready)**: Telepon dan email terverifikasi, siap dihubungi secara omnichannel.
+- 📈 **Lead Score (0–100)**: Skor komprehensif mengukur kelayakan prospek untuk segera dihubungi.
 
-Penyaringannya: alamat vendor dan placeholder (`sentry.io`, `example.com`, `noreply@`, `wixpress`) dibuang, dan email yang **berdomain sama dengan websitenya** diprioritaskan — `info@toko.id` menang atas `pemilik@gmail.com`. Akun sosial media yang ditemukan (Instagram, WhatsApp, Facebook, LinkedIn, TikTok, X) akan muncul sebagai badge berwarna interaktif yang langsung dapat diklik.
+---
 
-Ini butuh izin akses ke semua website, yang diminta saat Anda klik tombolnya — bukan saat pasang. Tempat yang sudah dicek tapi tidak punya email/sosial ditandai `tidak ada` dan tidak akan dicek ulang.
+### 3. Analitik Visual (📊 Analitik)
+Panel grafik visual interaktif yang menampilkan 5 bagan statistik penting:
+1. **Radar Peluang Lead**: Sebaran prospek berdasarkan tipe peluang bisnis.
+2. **Funnel CRM Status**: Alur konversi prospek (Baru ➔ Dihubungi ➔ Follow-up ➔ Deal / Tidak Tertarik).
+3. **Kategori Terbanyak**: Distribusi jenis usaha teratas.
+4. **Kelengkapan Kontak**: Persentase kepemilikan Telepon, Website, Email, dan Media Sosial.
+5. **Distribusi Rating**: Proporsi rating bintang (≥ 4.5, 4.0–4.4, dan < 4.0).
 
-### Status kontak & Tag Kustom
+![Panel Analitik Visual](docs/screenshots/analytics-panel.png)
 
-Tiap baris punya dropdown status, tag kustom, dan kolom catatan. Semuanya **tidak akan tertimpa** saat crawl atau enrich ulang — anotasi manual selalu menang atas data crawl. Ikut terekspor ke CSV/Excel/JSON sebagai kolom `status`, `note`, dan `tags`.
+---
 
-Filter **Status** dan **Sosial** memudahkan memilah prospek yang paling relevan.
+### 4. Quick Detail Drawer
+Klik nama tempat mana pun untuk membuka panel laci samping (*slide-over*) yang kaya informasi:
+- **Aksi Cepat 1-Klik**: Tombol instan WhatsApp (`wa.me`), Telepon (`tel:`), Website, Google Maps, dan Email.
+- **Ringkasan Skor**: Badge peluang visual dan skor lead 0–100.
+- **Info Lengkap**: Alamat, jam buka detail, Plus Code, koordinat GPS, dan waktu scrape presisi.
+- **Manajemen CRM**: Ubah status prospek, tulis catatan prospek (*auto-save on blur*), dan input tag kustom.
 
-### Penanda website
+![Quick Detail Drawer](docs/screenshots/lead-drawer.png)
 
-| Tampilan | Arti |
-|---|---|
-| nama domain | Ada website |
-| `belum ada` (oranye) | Kosong dan **belum pernah** dicek detailnya — klik *Lengkapi kontak* |
-| `tidak punya` (abu) | Sudah dicek, tempatnya memang tidak mencantumkan website |
+---
 
-Baris tanpa website juga diberi garis oranye di tepi kiri. Kolom `hasWebsite` (`ya`/`tidak`) ikut terekspor ke CSV/JSON.
+### 5. Import & Backup/Restore (CSV/JSON)
+Dialog modal impor serbaguna dengan area *drag-and-drop*:
+- **Smart Merge**: Menambahkan tempat baru ke database tanpa menghapus catatan atau status CRM yang sudah ada.
+- **Restore Database**: Memulihkan database lengkap dari file cadangan JSON (`.json`).
+- **Backup Database**: Mengunduh seluruh basis data dan riwayat sesi dalam satu file JSON terstruktur via menu *Alat ⚙ ▾*.
 
-## Penyimpanan & sesi
+![Modal Import & Restore Data](docs/screenshots/import-modal.png)
 
-Data disimpan di `chrome.storage.local` dan **tidak dihapus** saat crawl baru dijalankan — hasil baru digabung ke data lama.
+---
 
-Aturannya: **satu tempat = satu baris**, tapi tiap baris mencatat sesi mana saja yang menemukannya. Crawl "kafe Bandung" lalu "coffee shop Bandung" tidak menghasilkan duplikat, dan Anda tetap bisa memfilter per sesi lewat dropdown. Sesi diberi label otomatis dari kata kunci pencarian.
+### 6. Cari Email & Media Sosial
+Tombol **Cari email & sosial (N)** membuka website tiap tempat di tab tersembunyi, lalu mencari alamat email serta akun media sosial di halaman depan dan `/contact`, `/kontak`, `/about`:
+- Penyaringan cerdas: Membuang email vendor/template (`sentry.io`, `noreply@`, `wixpress`) dan memprioritaskan email dengan domain yang sama dengan website.
+- Akun media sosial yang didukung: **Instagram, WhatsApp (`wa.me`), Facebook, LinkedIn, TikTok, X (Twitter)**, ditampilkan sebagai badge berwarna yang langsung dapat diklik.
 
-Saat menggabungkan, nilai yang sudah terisi **tidak pernah** ditimpa oleh nilai kosong — jadi telepon hasil enrich tidak hilang saat crawl ulang.
+---
 
-Data hanya hilang kalau Anda klik **Hapus semua**, hapus baris satu per satu, atau uninstall extension.
+### 7. Multi-select & Batch Actions
+- Centang beberapa baris tempat untuk melakukan:
+  - **Ubah Status Massal**: Mengubah status prospek sekaligus (misal ke *Dihubungi* atau *Follow-up*).
+  - **Hapus Terpilih**: Membersihkan prospek yang tidak relevan secara serentak.
+  - **Export Terpilih**: Mengunduh hanya baris yang dipilih ke CSV.
 
-## Kolom hasil
+---
 
-`name`, `category`, `rating`, `reviews`, `address`, `phone`, `website`, `hasWebsite`, `email`, `emailsAll`, `socials`, `hours`, `plusCode`, `lat`, `lng`, `status`, `note`, `tags`, `opportunity`, `leadScore`, `url`
+## Penyimpanan & Sistem Anti-Duplikasi
 
-Tanpa opsi *Ambil kontak*, hanya kolom dari list view yang terisi (`name`, `category`, `rating`, `reviews`, `address`, `lat`, `lng`, `url`) — jauh lebih cepat karena tidak membuka tiap tempat.
+Data disimpan di `chrome.storage.local` dan **tidak pernah hilang** saat crawl baru dijalankan:
 
-## Arsitektur
+1. **Unique Google Maps Place ID**: Setiap tempat diidentifikasi menggunakan token permanen internal Google Maps (`!1s0x...`). Crawl ulang dengan kata kunci berbeda tidak akan menghasilkan duplikat.
+2. **Merge Idempoten**: Nilai yang sudah terisi tidak akan tertimpa oleh nilai kosong saat crawl baru. Catatan manual dan status CRM selalu dipertahankan.
+3. **Pembersih Duplikat No. Telepon**: Fitur *Alat ⚙ ▾ ➔ 🧹 Merge Duplikat* mendeteksi nomor telepon yang sama (≥7 digit) dan menggabungkannya ke baris paling lengkap.
+
+---
+
+## Kolom Data
+
+File export (CSV, Excel `.xls`, JSON, TSV) mencakup 23 kolom lengkap:
+
+```
+name, category, rating, reviews, address, phone, website, hasWebsite,
+email, emailsAll, socials, imageUrl, hours, plusCode, lat, lng,
+status, note, tags, opportunity, leadScore, scrapedAt, url
+```
+
+---
+
+## Arsitektur Modular
+
+Sistem dibangun dengan prinsip *Clean Separation of Concerns* (100% native Chrome MV3 tanpa ketergantungan bundler):
 
 | File | Peran |
 |---|---|
-| `manifest.json` | MV3, host permission dibatasi ke domain Google Maps |
-| `content.js` | Baca DOM: scroll feed (`COLLECT`) + baca panel detail (`SCRAPE_DETAIL`). Stateless. |
-| `background.js` | Service worker: state machine crawl, navigasi tab, simpan hasil, webhook, deduplikasi, import/restore |
-| `opportunity.js` | Mesin Lead Opportunity Scoring (Radar Peluang: Web Pitch, Rep Fix, High Value, Outreach Ready, Standard) & skor (0–100) |
+| `manifest.json` | Manifest V3, perizinan host dibatasi ke Google Maps |
+| `content.js` | Content script: pengumpulan feed (`COLLECT`) & detail in-page click (`CLICK_AND_SCRAPE_DETAIL`) |
+| `background.js` | Service worker: crawler engine, navigasi tab, state machine, deduplikasi, import/restore |
+| `i18n.js` | Kamus bilingual (ID/EN), helper terjemahan `t()`, dan lokalisasi UI |
+| `analytics.js` | Engine visualisasi 5 bagan analitik |
+| `drawer.js` | Controller panel samping Quick Detail Drawer dan pintasan aksi cepat |
+| `import-modal.js` | Controller dialog modal dropzone drag-and-drop file CSV & JSON |
+| `opportunity.js` | Mesin Lead Opportunity Scoring (Web Pitch, Rep Fix, High Value, Outreach Ready) & skor (0–100) |
 | `import.js` | Parser RFC 4180 CSV, parser JSON database backup, validasi schema & normalisasi |
-| `popup.html/css/js` | Kontrol + progress + export |
-| `dashboard.html/css/js` | Tabel/kartu, pagination, filter peluang, visual analytics 5-chart, batch bar, detail drawer, modal import, toast |
-| `email.js` | Pencari email & sosial — disuntikkan ke website tempat, bukan ke Maps |
-| `export.js` | Helper CSV/TSV/Excel/JSON & Backup database dipakai bersama popup & dashboard |
-| `test/` | Uji logika murni tanpa browser — `./test/run.sh` |
+| `export.js` | Formatter export CSV, Excel (.xls), JSON, TSV, dan backup database |
+| `email.js` | Engine pencari email & media sosial dari website tempat |
+| `dashboard.html/css/js` | UI dashboard utama, styling modern glassmorphism, filter, tabel & pagination |
+| `popup.html/css/js` | Popup ekstensi: kontrol mulai/berhenti crawl, input pengaturan, dan progress bar |
+| `test/` | Rangkaian pengujian unit otomatis tanpa browser (`./test/run.sh`) |
 
-State disimpan di `chrome.storage.local`, bukan di memori, supaya crawl selamat saat service worker di-suspend Chrome (jamak pada crawl panjang). Hasil ditulis ke storage **tiap baris** — kalau berhenti di tengah, data sejauh itu tetap ada.
+---
 
-## Test
+## Pengujian Unit
+
+Jalankan seluruh pengujian unit otomatis via shell:
 
 ```sh
 ./test/run.sh
 ```
 
-118 test: Lead Opportunity Scoring & Lead Score, RFC 4180 CSV parser & formula injection safety, backup JSON parsing & schema normalization, parsing angka (id-ID & en-US), ekstraksi koordinat, kunci dedup, merge lintas sesi, ekstraksi sosial media, helper copy massal email/telepon, format export Excel, escaping CSV, aritmetika pagination, serta kekekalan anotasi manual saat crawl ulang.
+**123 Unit Tests Lolos 100%**, mencakup:
+- Lead Opportunity Scoring & kalkulasi skor 0–100
+- Integritas dan kelengkapan kamus bilingual i18n
+- RFC 4180 CSV parser & netralisasi formula injection Excel
+- Backup database JSON parser & validasi skema
+- Pemeringkatan dan ekstraksi email cerdas
+- Ekstraksi media sosial (Instagram, WA, FB, LinkedIn, TikTok, X)
+- Dedup lintas sesi dan kekekalan anotasi CRM
+- Aritmetika pagination responsif & pemangkasan halaman
+- Format nomor telepon, rating (id-ID & en-US), dan koordinat geo
 
+---
 
-Scraping DOM tidak tercakup — itu hanya bisa diuji di browser sungguhan.
+## Legal & Batasan
 
-## Catatan penting
-
-**Selector rapuh secara struktural.** Google Maps tidak punya API DOM publik dan nama class-nya di-obfuscate serta berubah tanpa pemberitahuan. Kode ini memakai atribut yang relatif stabil (`role="feed"`, `data-item-id="address"`, `aria-label`) dengan fallback parsing teks, tapi tetap akan rusak suatu saat. Kalau hasil tiba-tiba kosong, yang perlu diperbarui ada di `parseCard()` dan `readDetail()` di `content.js`.
-
-**Locale.** Angka format Indonesia (`4,5` / `1.234`) dan Inggris (`4.5` / `1,234`) sama-sama ditangani, begitu juga label `Buka`/`Open` dan `ulasan`/`review`.
-
-**Transfer data dilewati saat tidak berubah.** Baris hanya dikirim ke dashboard kalau versinya berubah. Tanpa ini, polling 700 ms akan menyerialisasi seluruh dataset belasan kali per detik — tidak terasa di 200 baris, tapi menyendat di beberapa ribu.
-
-**Fase kumpul mengirim data bertahap.** Content script mengirim baris tiap putaran scroll, dan background menyimpannya lewat merge yang idempoten. Jadi kalau crawl mati di tengah fase kumpul, baris yang sudah ter-scroll tetap tersimpan.
-
-**Rate limit.** Jeda antar-detail diacak (`detailDelayMs` + 0–700 ms). Menurunkan jeda di bawah ~800 ms memperbesar peluang Maps menyajikan halaman kosong atau captcha. Kalau banyak baris masuk daftar kendala, naikkan jedanya.
-
-**CSV.** Diekspor dengan BOM UTF-8 (Excel membaca karakter non-ASCII dengan benar) dan nilai berawalan `=`, `+`, `-`, `@` diberi prefix `'` untuk mencegah formula injection saat file dibuka di spreadsheet.
-
-**Webhook.** Wajib HTTPS. Izin domain diminta saat klik **Kirim** (bukan saat pasang), lalu POST `{ source, count, rows }`.
-
-## Legal
-
-Scraping Google Maps melanggar Terms of Service Google, dan data tempat dapat dilindungi hak basis data. Alat ini untuk pemakaian pribadi berskala kecil dan riset. Untuk penggunaan komersial atau volume besar, pakai [Places API](https://developers.google.com/maps/documentation/places/web-service) resmi. Data kontak yang dipanen tunduk pada UU PDP / GDPR bila dipakai untuk menghubungi orang.
+Google Maps tidak menyediakan API DOM publik; atribut scraping dapat berubah sewaktu-waktu oleh Google. Ekstensi ini ditujukan untuk riset, edukasi, dan pemakaian internal berskala wajar. Untuk kebutuhan komersial skala besar, disarankan menggunakan [Google Maps Places API](https://developers.google.com/maps/documentation/places/web-service) resmi. Penggunaan data kontak wajib mematuhi UU Pelindungan Data Pribadi (UU PDP) / GDPR.
