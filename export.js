@@ -4,10 +4,19 @@
   const COLUMNS = [
     'name', 'category', 'rating', 'reviews', 'address', 'phone',
     'website', 'hasWebsite', 'email', 'emailsAll', 'socials', 'imageUrl', 'hours', 'plusCode',
-    'lat', 'lng', 'status', 'note', 'tags', 'opportunity', 'leadScore', 'url',
+    'lat', 'lng', 'status', 'note', 'tags', 'opportunity', 'leadScore', 'scrapedAt', 'url',
   ];
 
   const has = (v) => v != null && String(v).trim() !== '';
+
+  function formatTimestamp(ts) {
+    if (!ts) return '';
+    if (typeof ts === 'string' && ts.includes('-')) return ts;
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return '';
+    const p = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+  }
 
   // Baris dianggap "perlu dilengkapi" kalau telepon atau website masih kosong
   // DAN tempat itu memang sudah pernah dibuka detailnya.
@@ -33,7 +42,7 @@
     return /^[=+\-@]/.test(s) ? "'" + s : s;
   }
 
-  // hasWebsite, opportunity, leadScore adalah kolom turunan — dihitung saat export.
+  // hasWebsite, opportunity, leadScore, scrapedAt adalah kolom turunan / terformat saat export.
   function withDerived(r) {
     let oppLabel = '';
     let leadScore = 0;
@@ -42,6 +51,7 @@
       oppLabel = opp ? opp.label : '';
       leadScore = opp ? opp.score : 0;
     }
+    const scraped = r.scrapedAt || formatTimestamp(r.savedAt) || formatTimestamp(Date.now());
     return {
       ...r,
       hasWebsite: has(r.website) ? 'ya' : 'tidak',
@@ -49,6 +59,7 @@
       tags: Array.isArray(r.tags) ? r.tags.join(', ') : r.tags || '',
       opportunity: oppLabel,
       leadScore: leadScore,
+      scrapedAt: scraped,
     };
   }
 

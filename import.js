@@ -161,6 +161,8 @@
       status: raw.status || '',
       note: raw.note || raw.catatan || '',
       tags,
+      scrapedAt: raw.scrapedAt || (raw.savedAt ? (typeof raw.savedAt === 'number' ? new Date(raw.savedAt).toISOString().replace('T', ' ').slice(0, 19) : String(raw.savedAt)) : ''),
+      savedAt: raw.savedAt || null,
       url: raw.url || '',
       sessions: Array.isArray(raw.sessions) ? raw.sessions : [],
     };

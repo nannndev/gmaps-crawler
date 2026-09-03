@@ -402,36 +402,49 @@ input[type="search"] { flex: 1 1 240px; min-width: 190px; }
   background: var(--muted);
 }
 
-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12.5px; }
 
 thead th {
   position: sticky;
   top: 0;
   z-index: 10;
-  padding: 10px 12px;
-  background: var(--panel);
-  box-shadow: inset 0 -1px 0 var(--line);
+  padding: 12px 14px;
+  background: var(--chip);
+  border-bottom: 2px solid var(--line-strong);
+  box-shadow: 0 3px 6px -2px rgba(0, 0, 0, 0.06);
   text-align: left;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted);
+  letter-spacing: 0.06em;
+  color: var(--fg);
   white-space: nowrap;
+  user-select: none;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-th.sortable { cursor: pointer; user-select: none; }
-th.sortable:hover { color: var(--fg); }
-.sort-icon { display: inline-block; font-size: 10px; margin-left: 3px; }
-.c-chk { width: 34px; text-align: center; }
+th.sortable { cursor: pointer; }
+th.sortable:hover {
+  background: color-mix(in srgb, var(--accent) 14%, var(--chip));
+  color: var(--accent);
+}
+.sort-icon { display: inline-block; font-size: 10.5px; margin-left: 4px; opacity: 0.7; }
+th.sortable:hover .sort-icon { opacity: 1; color: var(--accent); }
+.c-chk { width: 36px; text-align: center; }
 
 tbody td {
-  padding: 7px 12px;
+  padding: 8px 14px;
   border-bottom: 1px solid var(--line);
   vertical-align: middle;
+  background: var(--panel);
   transition: background 0.12s ease;
 }
+tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--chip) 40%, var(--panel));
+}
 tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover { background: color-mix(in srgb, var(--accent) 4%, var(--panel)); }
+tbody tr:hover td {
+  background: color-mix(in srgb, var(--accent) 7%, var(--panel)) !important;
+}
 
 .c-name { min-width: 200px; max-width: 280px; }
 .c-cat { max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); }

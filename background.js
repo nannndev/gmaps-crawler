@@ -122,7 +122,13 @@ function mergeRows(existing, incoming, sessionId) {
     if (!k) continue;
     const prev = byKey.get(k);
     if (!prev) {
-      const fresh = { ...r, savedAt: Date.now() };
+      const now = Date.now();
+      const iso = new Date(now).toISOString().replace('T', ' ').slice(0, 19);
+      const fresh = {
+        ...r,
+        savedAt: r.savedAt || now,
+        scrapedAt: r.scrapedAt || iso,
+      };
       fresh.sessions = sessionId ? [sessionId] : r.sessions || [];
       byKey.set(k, fresh);
       order.push(k);
