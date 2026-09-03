@@ -306,12 +306,30 @@ async function runCrawl(tabId, options, sessionId) {
       message: `Detail ${i + 1}/${rows.length}: ${row.name || '(tanpa nama)'}`,
     });
 
+    let d = null;
     try {
-      await chrome.tabs.update(tabId, { url: row.url });
-      await waitForTabLoad(tabId);
-      await sleep(options.detailDelayMs || 1200);
+      // 1. Coba klik in-page langsung pada panel list tanpa reload tab (super cepat & tanpa refresh)
+      d = await tell(
+        tabId,
+        {
+          type: 'CLICK_AND_SCRAPE_DETAIL',
+          key: row.key || row.url,
+          url: row.url,
+          name: row.name,
+        },
+        { timeout: 15000 }
+      );
 
-      const d = await tell(tabId, { type: 'SCRAPE_DETAIL' }, { timeout: 40000 });
+      // 2. Jika kartu tidak ditemukan di feed (misal feed tertutup), fallback buka URL
+      if (!d || !d.ok || !d.data) {
+        if (d && d.notFoundInFeed) {
+          await chrome.tabs.update(tabId, { url: row.url });
+          await waitForTabLoad(tabId);
+          await sleep(options.detailDelayMs || 800);
+          d = await tell(tabId, { type: 'SCRAPE_DETAIL' }, { timeout: 30000 });
+        }
+      }
+
       if (d && d.ok && d.data) {
         // Data detail lebih tepercaya daripada hasil parsing card, tapi jangan
         // menimpa nilai yang sudah ada dengan string kosong.
@@ -329,8 +347,9 @@ async function runCrawl(tabId, options, sessionId) {
     await persistRow(rows[i]);
     if (errors.length) await setState({ errors: errors.slice(-25) });
 
-    // Jeda acak agar pola request tidak seragam.
-    await sleep((options.detailDelayMs || 1200) + Math.random() * 700);
+    // Jeda dinamis: in-page click cukup jeda singkat (400-600ms)
+    const baseDelay = d && d.inPage ? Math.min(options.detailDelayMs || 500, 600) : (options.detailDelayMs || 1200);
+    await sleep(baseDelay + Math.random() * 250);
   }
 
   return finishMerged('done');
@@ -679,6 +698,31 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
           await setSessions([]);
           await setState({ ...DEFAULT_STATE, options: (await getState()).options });
           return sendResponse({ ok: true });
+        case 'IMPORT_ROWS': {
+          const importList = Array.isArray(msg.rows) ? msg.rows : [];
+          if (!importList.length) return sendResponse({ ok: false, error: 'Tidak ada data valid untuk diimpor' });
+          const sid = await newSession(msg.sessionLabel || 'Impor Data');
+          const { rows: merged, added } = mergeRows(await getRows(), importList, sid);
+          await setRows(merged);
+          return sendResponse({ ok: true, count: merged.length, added, imported: importList.length });
+        }
+        case 'RESTORE_BACKUP': {
+          const backupRows = Array.isArray(msg.rows) ? msg.rows : [];
+          const backupSessions = Array.isArray(msg.sessions) ? msg.sessions : [];
+          await setRows(backupRows);
+          await setSessions(backupSessions);
+          await setState({ ...DEFAULT_STATE, options: (await getState()).options });
+          return sendResponse({ ok: true, rowsCount: backupRows.length, sessionsCount: backupSessions.length });
+        }
+        case 'GET_BACKUP': {
+          return sendResponse({
+            ok: true,
+            version: '1.3.0',
+            exportedAt: new Date().toISOString(),
+            rows: await getRows(),
+            sessions: await getSessions(),
+          });
+        }
         case 'WEBHOOK':
           return sendResponse(await postToWebhook(msg.url));
         case 'PROGRESS': {

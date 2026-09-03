@@ -4,7 +4,7 @@
   const COLUMNS = [
     'name', 'category', 'rating', 'reviews', 'address', 'phone',
     'website', 'hasWebsite', 'email', 'emailsAll', 'socials', 'imageUrl', 'hours', 'plusCode',
-    'lat', 'lng', 'status', 'note', 'tags', 'url',
+    'lat', 'lng', 'status', 'note', 'tags', 'opportunity', 'leadScore', 'url',
   ];
 
   const has = (v) => v != null && String(v).trim() !== '';
@@ -33,13 +33,22 @@
     return /^[=+\-@]/.test(s) ? "'" + s : s;
   }
 
-  // hasWebsite adalah kolom turunan — dihitung saat export, tidak disimpan.
+  // hasWebsite, opportunity, leadScore adalah kolom turunan — dihitung saat export.
   function withDerived(r) {
+    let oppLabel = '';
+    let leadScore = 0;
+    if (typeof window !== 'undefined' && window.MDCOpportunity) {
+      const opp = window.MDCOpportunity.getOpportunity(r);
+      oppLabel = opp ? opp.label : '';
+      leadScore = opp ? opp.score : 0;
+    }
     return {
       ...r,
       hasWebsite: has(r.website) ? 'ya' : 'tidak',
       socials: Array.isArray(r.socials) ? r.socials.join(', ') : r.socials || '',
       tags: Array.isArray(r.tags) ? r.tags.join(', ') : r.tags || '',
+      opportunity: oppLabel,
+      leadScore: leadScore,
     };
   }
 
@@ -113,8 +122,19 @@
   const downloadJSON = (rows) =>
     download(JSON.stringify(rows.map(withDerived), null, 2), `gmaps-${stamp()}.json`, 'application/json');
 
+  const downloadBackup = (rows, sessions) => {
+    const payload = {
+      version: '1.3.0',
+      exportedAt: new Date().toISOString(),
+      sessions: sessions || [],
+      rows: rows || [],
+    };
+    download(JSON.stringify(payload, null, 2), `gmaps-backup-${stamp()}.json`, 'application/json');
+  };
+
   window.MDCExport = {
     COLUMNS, STATUSES, has, needsEnrich, needsEmail, cell, toCSV, toTSV, toExcelTSV,
-    extractEmailList, extractPhoneList, stamp, download, downloadCSV, downloadExcel, downloadJSON
+    extractEmailList, extractPhoneList, stamp, download, downloadCSV, downloadExcel, downloadJSON,
+    downloadBackup
   };
 })();

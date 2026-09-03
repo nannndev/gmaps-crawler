@@ -2,44 +2,60 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <title>Maps Directory Crawler — Dashboard</title>
+  <title>Maps Directory Crawler — Dashboard Pro</title>
   <link rel="stylesheet" href="dashboard.css" />
 </head>
 <body>
   <header class="top">
     <div class="brand">
-      <h1>Data Tempat</h1>
-      <span id="statusChip" class="chip idle">idle</span>
-      <span id="live" class="live" hidden><i></i>live</span>
+      <div class="brand-badge">📍</div>
+      <div class="brand-titles">
+        <div class="brand-line">
+          <h1>Maps Directory Crawler</h1>
+          <span id="statusChip" class="chip idle">idle</span>
+          <span id="live" class="live" hidden><i></i>live</span>
+        </div>
+        <span id="lblBrandSub" class="brand-sub">Lead Intelligence & Outreach Platform</span>
+      </div>
     </div>
     <div class="tools">
-      <div class="seg" role="group" aria-label="Tampilan">
-        <button id="viewTable" class="on" aria-pressed="true">Tabel</button>
-        <button id="viewCard" aria-pressed="false">Kartu</button>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button id="langId" class="lang-btn on" title="Bahasa Indonesia">ID</button>
+        <button id="langEn" class="lang-btn" title="English">EN</button>
       </div>
-      <button id="toggleAnalytics" class="ghost" title="Tampilkan/sembunyikan analitik visual">📊 Analitik</button>
-      <button id="enrich" class="primary">Lengkapi kontak</button>
-      <button id="emails">Cari email & sosial</button>
-      <button id="stop" disabled>Berhenti</button>
+
+      <div class="seg" role="group" aria-label="Tampilan">
+        <button id="viewTable" class="on" aria-pressed="true"><span id="lblViewTable">Tabel</span></button>
+        <button id="viewCard" aria-pressed="false"><span id="lblViewCard">Kartu</span></button>
+      </div>
+      <button id="toggleAnalytics" class="ghost" title="Tampilkan/sembunyikan analitik visual"><span id="lblAnalyticsBtn">📊 Analitik</span></button>
+      <button id="enrich" class="primary"><span id="lblEnrichBtn">⚡ Enrich Kontak</span></button>
+      <button id="emails"><span id="lblEmailsBtn">🔍 Cari Email & Sosmed</span></button>
+      <button id="btnOpenImport" class="ghost" title="Import file CSV atau JSON"><span id="lblImportBtn">📥 Import</span></button>
+      <button id="stop" disabled><span id="lblStopBtn">Berhenti</span></button>
 
       <div class="dropdown">
-        <button id="btnExportMenu" class="ghost">Export ▾</button>
+        <button id="btnExportMenu" class="ghost"><span id="lblExportMenu">Export ▾</span></button>
         <div class="dropdown-content">
-          <button id="csv">Export CSV</button>
-          <button id="excel">Export Excel (.xls)</button>
-          <button id="json">Export JSON</button>
-          <button id="copy">Salin (TSV)</button>
+          <button id="csv"><span id="lblExportCsv">Export CSV</span></button>
+          <button id="excel"><span id="lblExportExcel">Export Excel (.xls)</span></button>
+          <button id="json"><span id="lblExportJson">Export JSON</span></button>
+          <button id="copy"><span id="lblExportTsv">Salin (TSV)</span></button>
           <hr />
-          <button id="copyEmails">Salin Semua Email</button>
-          <button id="copyPhones">Salin Semua Telepon</button>
+          <button id="copyEmails"><span id="lblCopyEmails">Salin Semua Email</span></button>
+          <button id="copyPhones"><span id="lblCopyPhones">Salin Semua Telepon</span></button>
         </div>
       </div>
 
       <div class="dropdown">
-        <button id="btnMoreMenu" class="ghost">Alat ⚙ ▾</button>
+        <button id="btnMoreMenu" class="ghost"><span id="lblToolsMenu">Alat ⚙ ▾</span></button>
         <div class="dropdown-content">
-          <button id="dedupe">Bersihkan Duplikat</button>
-          <button id="clear" class="danger">Hapus semua data</button>
+          <button id="btnMenuImport"><span id="lblMenuImport">📥 Import CSV / JSON…</span></button>
+          <button id="btnBackup"><span id="lblMenuBackup">💾 Backup Database (.json)</span></button>
+          <button id="btnMenuRestore"><span id="lblMenuRestore">🔄 Restore Database…</span></button>
+          <hr />
+          <button id="dedupe"><span id="lblMenuDedupe">🧹 Merge Duplikat</span></button>
+          <button id="clear" class="danger"><span id="lblMenuClear">🗑️ Kosongkan Semua Data</span></button>
         </div>
       </div>
     </div>
@@ -56,37 +72,50 @@
   <section id="analyticsPanel" class="analytics-panel" hidden>
     <div class="analytics-grid">
       <div class="analytics-card">
-        <h4>Funnel CRM Status</h4>
+        <h4 id="lblAnalyticsOpp">Radar Peluang Lead</h4>
+        <div id="analyticsOpportunity" class="chart-bars"></div>
+      </div>
+      <div class="analytics-card">
+        <h4 id="lblAnalyticsFunnel">Funnel CRM Status</h4>
         <div id="analyticsFunnel" class="chart-bars"></div>
       </div>
       <div class="analytics-card">
-        <h4>Kategori Terbanyak</h4>
+        <h4 id="lblAnalyticsCat">Kategori Terbanyak</h4>
         <div id="analyticsCategories" class="chart-bars"></div>
       </div>
       <div class="analytics-card">
-        <h4>Kelengkapan Kontak</h4>
+        <h4 id="lblAnalyticsComp">Kelengkapan Kontak</h4>
         <div id="analyticsCompleteness" class="chart-bars"></div>
       </div>
       <div class="analytics-card">
-        <h4>Distribusi Rating</h4>
+        <h4 id="lblAnalyticsRate">Distribusi Rating</h4>
         <div id="analyticsRating" class="chart-bars"></div>
       </div>
     </div>
   </section>
 
   <section class="stats">
-    <div class="stat"><span id="sTotal">0</span><label>Tempat</label></div>
-    <div class="stat"><span id="sPhone">0</span><label>Ada telepon</label></div>
-    <div class="stat"><span id="sSite">0</span><label>Ada website</label></div>
-    <div class="stat warn"><span id="sNoSite">0</span><label>Tanpa website</label></div>
-    <div class="stat"><span id="sEmail">0</span><label>Ada email</label></div>
-    <div class="stat"><span id="sSocial">0</span><label>Ada sosial</label></div>
-    <div class="stat"><span id="sIncomplete">0</span><label>Belum lengkap</label></div>
+    <div class="stat"><span id="sTotal">0</span><label id="lblStatTotal">Total Leads</label></div>
+    <div class="stat highlight"><span id="sWebPitch">0</span><label id="lblStatWebPitch">Butuh Website</label></div>
+    <div class="stat ready"><span id="sReady">0</span><label id="lblStatReady">Kontak Siap</label></div>
+    <div class="stat"><span id="sPhone">0</span><label id="lblStatPhone">Ada Telepon</label></div>
+    <div class="stat"><span id="sSite">0</span><label id="lblStatSite">Ada Website</label></div>
+    <div class="stat"><span id="sEmail">0</span><label id="lblStatEmail">Ada Email</label></div>
+    <div class="stat"><span id="sSocial">0</span><label id="lblStatSocial">Ada Sosmed</label></div>
+    <div class="stat warn"><span id="sIncomplete">0</span><label id="lblStatIncomplete">Belum Lengkap</label></div>
   </section>
 
   <section class="filters">
     <input id="q" type="search" placeholder="Cari nama, alamat, kategori, telepon, email, tag…" />
     <select id="session" title="Sesi crawl"><option value="all">Semua sesi</option></select>
+    <select id="fOpp" title="Filter Radar Peluang">
+      <option value="all">Peluang: semua</option>
+      <option value="web-pitch">🌐 Butuh Website</option>
+      <option value="reputation-fix">🛡️ Perlu Reputasi</option>
+      <option value="high-value">⭐ High Value Lead</option>
+      <option value="outreach-ready">⚡ Kontak Siap</option>
+      <option value="standard">📍 Standard Lead</option>
+    </select>
     <select id="fWebsite">
       <option value="all">Website: semua</option>
       <option value="no">Tanpa website</option>
@@ -125,6 +154,7 @@
     </select>
     <select id="sort">
       <option value="default">Urutan asli</option>
+      <option value="score">Skor Peluang (Tinggi → Rendah)</option>
       <option value="name">Nama A–Z</option>
       <option value="rating">Rating tertinggi</option>
       <option value="reviews">Review terbanyak</option>
@@ -139,15 +169,16 @@
       <thead>
         <tr>
           <th class="c-chk"><input type="checkbox" id="selectAll" title="Pilih semua baris di halaman ini" /></th>
-          <th class="c-name sortable" data-sort="name">Nama <span class="sort-icon"></span></th>
-          <th class="sortable" data-sort="category">Kategori <span class="sort-icon"></span></th>
-          <th class="num sortable" data-sort="rating">Rating <span class="sort-icon"></span></th>
-          <th>Alamat</th>
-          <th>Telepon</th>
-          <th>Website</th>
-          <th>Email & Sosial</th>
-          <th class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
-          <th>Catatan & Tag</th>
+          <th id="thOpp" class="sortable" data-sort="opp">Peluang <span class="sort-icon"></span></th>
+          <th id="thName" class="c-name sortable" data-sort="name">Nama <span class="sort-icon"></span></th>
+          <th id="thCat" class="sortable" data-sort="category">Kategori <span class="sort-icon"></span></th>
+          <th id="thRating" class="num sortable" data-sort="rating">Rating <span class="sort-icon"></span></th>
+          <th id="thAddr">Alamat</th>
+          <th id="thPhone">Telepon</th>
+          <th id="thSite">Website</th>
+          <th id="thEmail">Email & Sosmed</th>
+          <th id="thStatus" class="sortable" data-sort="status">Status <span class="sort-icon"></span></th>
+          <th id="thNote">Catatan & Tag</th>
           <th class="c-act"></th>
         </tr>
       </thead>
@@ -157,7 +188,10 @@
 
   <div id="cardWrap" class="cardwrap" hidden></div>
 
-  <p id="empty" class="empty" hidden></p>
+  <div id="empty" class="empty" hidden>
+    <div class="empty-icon">🔍</div>
+    <p id="emptyText" class="empty-msg">Belum ada data tempat.</p>
+  </div>
 
   <nav id="pager" class="pager" hidden>
     <button id="pFirst" title="Halaman pertama">«</button>
@@ -184,9 +218,9 @@
       <option value="deal">Deal</option>
       <option value="tolak">Tidak tertarik</option>
     </select>
-    <button id="batchExport" class="ghost">Export Terpilih</button>
-    <button id="batchDelete" class="danger ghost">Hapus Terpilih</button>
-    <button id="batchCancel" class="ghost">Batal</button>
+    <button id="batchExport" class="ghost"><span id="lblBatchExport">Export Terpilih</span></button>
+    <button id="batchDelete" class="danger ghost"><span id="lblBatchDelete">Hapus Terpilih</span></button>
+    <button id="batchCancel" class="ghost"><span id="lblBatchCancel">Batal</span></button>
   </div>
 
   <!-- Quick Detail Drawer Modal -->
@@ -208,39 +242,111 @@
       </div>
 
       <div class="drawer-section">
-        <h3>Informasi Kontak</h3>
-        <div class="drawer-row"><b>Alamat:</b> <span id="dAddr">—</span></div>
-        <div class="drawer-row"><b>Telepon:</b> <span id="dPhone">—</span></div>
-        <div class="drawer-row"><b>Website:</b> <span id="dWebsite">—</span></div>
-        <div class="drawer-row"><b>Email:</b> <span id="dEmail">—</span></div>
-        <div class="drawer-row"><b>Media Sosial:</b> <div id="dSocials">—</div></div>
+        <h3 id="lblDrawerOpp">Radar Peluang & Skor</h3>
+        <div class="drawer-opp-box">
+          <div id="dOppBadge" class="drawer-opp-main"></div>
+          <div class="drawer-score-box">
+            <span class="score-label">Lead Score</span>
+            <b id="dLeadScore" class="score-number">0/100</b>
+          </div>
+        </div>
       </div>
 
       <div class="drawer-section">
-        <h3>Lokasi & Jam Buka</h3>
-        <div class="drawer-row"><b>Plus Code:</b> <span id="dPlusCode">—</span></div>
-        <div class="drawer-row"><b>Koordinat:</b> <span id="dCoords">—</span></div>
-        <div class="drawer-row"><b>Jam Buka:</b> <div id="dHours" class="hours-box">—</div></div>
+        <h3 id="lblDrawerContact">Informasi Kontak</h3>
+        <div class="drawer-row"><b id="lblDAddr">Alamat:</b> <span id="dAddr">—</span></div>
+        <div class="drawer-row"><b id="lblDPhone">Telepon:</b> <span id="dPhone">—</span></div>
+        <div class="drawer-row"><b id="lblDWebsite">Website:</b> <span id="dWebsite">—</span></div>
+        <div class="drawer-row"><b id="lblDEmail">Email:</b> <span id="dEmail">—</span></div>
+        <div class="drawer-row"><b id="lblDSocials">Media Sosial:</b> <div id="dSocials">—</div></div>
       </div>
 
       <div class="drawer-section">
-        <h3>Manajemen CRM</h3>
+        <h3 id="lblDrawerLocation">Lokasi & Jam Buka</h3>
+        <div class="drawer-row"><b id="lblDPlusCode">Plus Code:</b> <span id="dPlusCode">—</span></div>
+        <div class="drawer-row"><b id="lblDCoords">Koordinat:</b> <span id="dCoords">—</span></div>
+        <div class="drawer-row"><b id="lblDHours">Jam Buka:</b> <div id="dHours" class="hours-box">—</div></div>
+      </div>
+
+      <div class="drawer-section">
+        <h3 id="lblDrawerCrm">Manajemen CRM</h3>
         <div class="drawer-row">
-          <b>Status:</b>
+          <b id="lblDStatus">Status:</b>
           <div id="dStatusWrap"></div>
         </div>
         <div class="drawer-row">
-          <b>Catatan:</b>
+          <b id="lblDNote">Catatan:</b>
           <textarea id="dNote" class="drawer-textarea" placeholder="Tulis catatan prospek di sini…"></textarea>
         </div>
         <div class="drawer-row">
-          <b>Tag Kustom:</b>
+          <b id="lblDTags">Tag Kustom:</b>
           <input id="dTags" type="text" class="drawer-input" placeholder="Pisahkan dengan koma (mis: VIP, Target Q3)" />
         </div>
       </div>
     </div>
   </aside>
 
+  <!-- Modal Import / Restore Data -->
+  <div id="importOverlay" class="modal-overlay" hidden>
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">📥</span>
+          <div>
+            <h3 id="lblModalImportTitle">Import & Restore Data</h3>
+            <p id="lblModalImportSub" class="modal-sub">Unggah file CSV atau file backup database JSON</p>
+          </div>
+        </div>
+        <button id="importClose" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="importDropzone" class="dropzone">
+          <input type="file" id="importFileInput" accept=".csv,.json" hidden />
+          <div class="dropzone-icon">📁</div>
+          <div class="dropzone-text"><b id="lblDropzoneMain">Pilih file CSV atau JSON</b> <span id="lblDropzoneSub">atau seret ke sini</span></div>
+          <div id="lblDropzoneHint" class="dropzone-hint">Mendukung format CSV hasil export atau JSON database backup</div>
+        </div>
+
+        <div id="importPreview" class="import-preview" hidden>
+          <div class="import-file-badge">
+            <span id="impFileName">data.csv</span>
+            <span id="impFileType" class="imp-tag">CSV</span>
+          </div>
+          <div class="import-stats">
+            <div><b id="impValidCount">0</b> <span id="lblImpValidText">tempat valid ditemukan</span></div>
+            <div id="impInvalidWrap" hidden><span id="impInvalidCount" class="text-warn">0</span> <span id="lblImpInvalidText">baris diabaikan (tanpa nama)</span></div>
+          </div>
+
+          <div class="import-mode-wrap">
+            <label class="mode-option">
+              <input type="radio" name="importMode" value="merge" checked />
+              <div class="mode-desc">
+                <b id="lblModeMergeTitle">Gabungkan (Merge)</b>
+                <span id="lblModeMergeDesc">Tambahkan tempat baru ke database tanpa menghapus data atau catatan CRM lama.</span>
+              </div>
+            </label>
+            <label class="mode-option">
+              <input type="radio" name="importMode" value="restore" />
+              <div class="mode-desc">
+                <b id="lblModeRestoreTitle">Ganti Semua (Restore Database)</b>
+                <span id="lblModeRestoreDesc">Hapus database lama dan gantikan sepenuhnya dengan isi file cadangan.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelImport" class="ghost"><span id="lblBtnCancelImport">Batal</span></button>
+        <button id="btnDoImport" class="primary" disabled><span id="lblBtnDoImport">Mulai Impor</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="opportunity.js"></script>
+  <script src="import.js"></script>
   <script src="export.js"></script>
   <script src="dashboard.js"></script>
 </body>

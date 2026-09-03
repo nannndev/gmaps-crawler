@@ -312,6 +312,157 @@
     return data;
   }
 
+  // --- IN-PAGE CLICK & SCRAPE DETAIL (SUPER FAST, NO RELOAD) ---------------
+
+  let lastDetailName = '';
+
+  function findCardElement(key, url, name) {
+    const feed = getFeed();
+    if (!feed) return null;
+
+    const anchors = [...feed.querySelectorAll('a[href*="/maps/place/"]')];
+
+    // 1. Cocokkan key (!1s token atau place id)
+    if (key) {
+      const byKey = anchors.find((a) => {
+        const k = keyFrom(a.href);
+        return k === key || a.href.includes(key);
+      });
+      if (byKey) return byKey;
+    }
+
+    // 2. Cocokkan URL
+    if (url) {
+      const cleanUrl = url.split('?')[0];
+      const byUrl = anchors.find((a) => {
+        const aClean = a.href.split('?')[0];
+        return aClean === cleanUrl || a.href.startsWith(cleanUrl) || cleanUrl.startsWith(aClean);
+      });
+      if (byUrl) return byUrl;
+    }
+
+    // 3. Cocokkan nama tempat
+    if (name) {
+      const nLow = name.trim().toLowerCase();
+      const byName = anchors.find((a) => {
+        const aria = (a.getAttribute('aria-label') || '').trim().toLowerCase();
+        if (aria && aria === nLow) return true;
+        const card = a.closest('[jsaction]') || a.parentElement;
+        const cName = txt(card && card.querySelector('.qBF1Pd, .fontHeadlineSmall')).toLowerCase();
+        return cName && cName === nLow;
+      });
+      if (byName) return byName;
+    }
+
+    return null;
+  }
+
+  async function locateAndScrollToCard(key, url, name) {
+    const feed = getFeed();
+    if (!feed) return null;
+
+    // 1. Coba temukan langsung di DOM saat ini
+    let a = findCardElement(key, url, name);
+    if (a) return a;
+
+    // 2. Jika tidak ada dan feed sedang di bawah (efek dari fase scroll sebelumnya),
+    // scroll kembali ke atas terlebih dahulu.
+    if (feed.scrollTop > 400) {
+      feed.scrollTop = 0;
+      await sleep(350);
+      a = findCardElement(key, url, name);
+      if (a) return a;
+    }
+
+    // 3. Scroll bertahap ke bawah untuk mencari kartu di virtual feed
+    for (let s = 0; s < 12; s++) {
+      feed.scrollTop += 500;
+      await sleep(220);
+      a = findCardElement(key, url, name);
+      if (a) return a;
+      if (reachedEnd()) break;
+    }
+
+    return null;
+  }
+
+  function triggerCardClick(a) {
+    a.scrollIntoView({ behavior: 'instant', block: 'center' });
+    const evt = { bubbles: true, cancelable: true, view: window };
+    a.dispatchEvent(new MouseEvent('mousedown', evt));
+    a.dispatchEvent(new MouseEvent('mouseup', evt));
+    a.click();
+    const card = a.closest('[jsaction]') || a;
+    if (card !== a) {
+      card.dispatchEvent(new MouseEvent('mousedown', evt));
+      card.dispatchEvent(new MouseEvent('mouseup', evt));
+      card.click();
+    }
+  }
+
+  async function waitForDetailUpdate(targetKey, targetName, prevName, timeout = 5000) {
+    const t0 = Date.now();
+    const nLow = (targetName || '').trim().toLowerCase();
+
+    while (Date.now() - t0 < timeout) {
+      const pane = detailPane();
+      if (pane) {
+        const h1 = pane.querySelector('h1');
+        const curName = txt(h1);
+        const curNameLow = curName.toLowerCase();
+
+        const nameMatch = nLow && (curNameLow === nLow || curNameLow.includes(nLow) || nLow.includes(curNameLow));
+        const keyMatch = targetKey && (location.href.includes(targetKey) || keyFrom(location.href) === targetKey);
+        const nameChanged = prevName && curName && curName !== prevName;
+
+        const hasContent = !!pane.querySelector('[data-item-id], [jsaction*="category"], button[aria-label]');
+
+        if ((nameMatch || keyMatch || nameChanged) && (hasContent || Date.now() - t0 > 1200)) {
+          await sleep(250);
+          return true;
+        }
+      }
+      await sleep(80);
+    }
+    return false;
+  }
+
+  async function clickAndScrapeDetail(msg) {
+    const { key, url, name } = msg || {};
+    const feed = getFeed();
+    if (!feed) {
+      return { ok: false, notFoundInFeed: true, error: 'Feed tidak ditemukan di halaman' };
+    }
+
+    const anchor = await locateAndScrollToCard(key, url, name);
+    if (!anchor) {
+      return { ok: false, notFoundInFeed: true, error: 'Kartu tidak ditemukan di feed' };
+    }
+
+    const prevName = lastDetailName;
+    triggerCardClick(anchor);
+
+    await waitForDetailUpdate(key, name, prevName, 5000);
+
+    let data = readDetail();
+    lastDetailName = data.name || name || '';
+
+    if (!data.hours) {
+      const btn = detailPane().querySelector(
+        '[data-item-id="oh"], button[aria-label*="Jam buka"], button[aria-label*="Hours"]'
+      );
+      if (btn) {
+        try {
+          btn.click();
+          await sleep(350);
+          data = { ...data, ...readDetail() };
+        } catch (_) {}
+      }
+    }
+
+    return { ok: true, data, inPage: true };
+  }
+
   // --- message bridge ------------------------------------------------------
 
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
@@ -325,6 +476,8 @@
             return sendResponse({ ok: true });
           case 'COLLECT':
             return sendResponse({ ok: true, data: await collect(msg.options || {}) });
+          case 'CLICK_AND_SCRAPE_DETAIL':
+            return sendResponse(await clickAndScrapeDetail(msg));
           case 'SCRAPE_DETAIL':
             return sendResponse({ ok: true, data: await scrapeDetailWhenReady() });
           default:
