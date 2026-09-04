@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - Maps Directory Crawler</title>
+  <meta name="description" content="Privacy Policy for Maps Directory Crawler Chrome Extension. Learn how your data is handled strictly locally on your browser.">
+  <link rel="icon" type="image/png" href="../icon48.png">
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --border-color: #374151;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.1);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 0;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .header-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(11, 15, 25, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .brand img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .lang-toggle {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 2.5rem auto 5rem;
+      padding: 0 1.5rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 9999px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.75rem;
+      color: #ffffff;
+    }
+
+    .meta-info {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1.25rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #e5e7eb;
+      margin: 1.25rem 0 0.5rem;
+    }
+
+    p {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      font-size: 0.98rem;
+    }
+
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-muted);
+      font-size: 0.98rem;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    code {
+      background: rgba(255, 255, 255, 0.08);
+      color: #93c5fd;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .callout {
+      background: rgba(59, 130, 246, 0.08);
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.25rem 0;
+      color: #d1d5db;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.25rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .lang-id {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="header-nav">
+    <a href="https://github.com/nannndev/gmaps-crawler" class="brand" target="_blank" rel="noopener">
+      <img src="../icon48.png" alt="Maps Directory Crawler Icon" onerror="this.style.display='none'">
+      <span>Maps Directory Crawler</span>
+    </a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-en" onclick="setLanguage('en')">EN</button>
+      <button class="lang-btn" id="btn-id" onclick="setLanguage('id')">ID</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="hero-badge">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span class="lang-en">100% Client-Side & Local Storage Only</span>
+      <span class="lang-id">100% Berjalan di Browser & Penyimpanan Lokal</span>
+    </div>
+
+    <h1 class="lang-en">Privacy Policy</h1>
+    <h1 class="lang-id">Kebijakan Privasi</h1>
+
+    <div class="meta-info">
+      <span class="lang-en"><strong>Effective Date:</strong> September 4, 2026 | <strong>Extension:</strong> Maps Directory Crawler (Manifest V3)</span>
+      <span class="lang-id"><strong>Tanggal Berlaku:</strong> 4 September 2026 | <strong>Ekstensi:</strong> Maps Directory Crawler (Manifest V3)</span>
+    </div>
+
+    <!-- ENGLISH SECTION -->
+    <div class="lang-en">
+      <div class="card">
+        <h2>1. Overview & Commitment to Privacy</h2>
+        <p><strong>Maps Directory Crawler</strong> is committed to protecting your privacy. This extension is designed from the ground up to operate entirely on your local machine. We believe that your search queries, prospective leads, and business intelligence belong solely to you.</p>
+        <div class="callout">
+          <div class="callout-title">Key Principle: Zero Remote Data Transmission</div>
+          Maps Directory Crawler does <strong>NOT</strong> operate external servers, remote databases, or cloud sync systems. All data extracted and organized using this extension remains stored locally in your browser's private storage.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>2. Data Collection and Usage</h2>
+        <p>The extension handles two categories of data:</p>
+
+        <h3>A. Public Directory Listings</h3>
+        <p>When you explicitly initiate a crawl on an active Google Maps tab, the extension reads publicly accessible information visible on the web page, including:</p>
+        <ul>
+          <li>Business name and category</li>
+          <li>Star rating and total review counts</li>
+          <li>Public contact numbers, website URLs, and physical addresses</li>
+          <li>Operating hours and geographical coordinates</li>
+          <li>Public cover photos and Google Maps place links</li>
+        </ul>
+        <p>This information is processed temporarily in-memory and saved directly into your browser's <code>chrome.storage.local</code> database.</p>
+
+        <h3>B. User Notes, Tags, and CRM Pipeline Status</h3>
+        <p>When you use the built-in Dashboard, any status tags (e.g., <em>Outreach Ready</em>, <em>Contacted</em>, <em>Closed</em>), custom tags, and personal notes you enter are saved strictly on your local browser.</p>
+      </div>
+
+      <div class="card">
+        <h2>3. Chrome Extension Permissions</h2>
+        <p>To perform its advertised features, the extension requests the following browser permissions:</p>
+        <ul>
+          <li><code>storage</code> and <code>unlimitedStorage</code>: Used exclusively to save and retrieve your scraped directory listings, settings, and CRM notes locally in your browser without hitting storage quota limits.</li>
+          <li><code>tabs</code> and <code>scripting</code>: Used to communicate with the active Google Maps tab and inject the extraction script when you click the Start button.</li>
+          <li><code>clipboardWrite</code>: Used solely to allow you to copy business details (phone numbers, addresses, coordinates) to your clipboard with one click.</li>
+          <li><code>optional_host_permissions</code> (<code>*://*/*</code>): Used strictly on-demand if you enable the optional contact enrichment feature (finding publicly listed business emails and social links directly from the target company's official website).</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>4. Data Sharing, Sale, and Monetization</h2>
+        <p>We believe in strict data protection principles:</p>
+        <ul>
+          <li>We <strong>do NOT sell, rent, trade, or lease</strong> your data or scraped leads to any third parties or data brokers.</li>
+          <li>We <strong>do NOT track</strong> your browsing history outside of Google Maps or map search sessions.</li>
+          <li>We <strong>do NOT embed third-party tracking scripts, behavioral analytics, or advertising SDKs</strong> in this extension.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>5. Data Retention, Export, and Deletion</h2>
+        <p>You have complete control over your data at all times:</p>
+        <ul>
+          <li><strong>Export:</strong> You can export your data at any time into CSV or JSON formats using the Export feature in the Dashboard.</li>
+          <li><strong>Deletion:</strong> You can delete individual records or clear the entire local database at any time by clicking the <em>Clear Data</em> button in the extension dashboard.</li>
+          <li><strong>Uninstall:</strong> If you uninstall or remove the extension from Chrome, all data stored within <code>chrome.storage.local</code> is permanently purged by Google Chrome.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>6. Single Purpose Declaration</h2>
+        <p>In accordance with the Chrome Web Store Developer Program Policies, <strong>Maps Directory Crawler</strong> has a single, clearly defined purpose:</p>
+        <p><em>To enable users to extract, organize, and manage publicly available business directory listings from map search results into a local productivity dashboard.</em></p>
+      </div>
+
+      <div class="card">
+        <h2>7. Contact and Inquiries</h2>
+        <p>If you have any questions or feedback regarding this Privacy Policy or the security of the extension, please open an issue on the official GitHub repository:</p>
+        <p>GitHub: <a href="https://github.com/nannndev/gmaps-crawler/issues" target="_blank" rel="noopener">github.com/nannndev/gmaps-crawler/issues</a></p>
+      </div>
+    </div>
+
+    <!-- INDONESIAN SECTION -->
+    <div class="lang-id">
+      <div class="card">
+        <h2>1. Ringkasan & Komitmen Privasi</h2>
+        <p><strong>Maps Directory Crawler</strong> berkomitmen penuh untuk menjaga privasi Anda. Ekstensi ini dirancang secara khusus untuk berjalan 100% di perangkat lokal Anda. Data pencarian, prospek bisnis, dan catatan Anda adalah milik Anda sepenuhnya.</p>
+        <div class="callout">
+          <div class="callout-title">Prinsip Utama: Tanpa Pengiriman Data ke Server Luar</div>
+          Maps Directory Crawler <strong>TIDAK</strong> memiliki atau mengoperasikan server eksternal, database cloud, maupun sistem pelacak pihak ketiga. Seluruh data yang diambil dan dikelola disimpan murni di memori lokal browser Anda (<code>chrome.storage.local</code>).
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>2. Pengumpulan dan Penggunaan Data</h2>
+        <p>Ekstensi ini memproses dua kategori data:</p>
+
+        <h3>A. Informasi Direktori Publik</h3>
+        <p>Saat Anda memulai proses crawl pada tab Google Maps yang sedang aktif, ekstensi membaca informasi publik yang ditampilkan di halaman peta:</p>
+        <ul>
+          <li>Nama tempat dan kategori usaha</li>
+          <li>Rating bintang dan jumlah ulasan publik</li>
+          <li>Nomor telepon publik, alamat website, dan alamat fisik</li>
+          <li>Jam operasional dan koordinat peta (latitude/longitude)</li>
+          <li>Foto profil publik dan tautan Google Maps</li>
+        </ul>
+        <p>Data ini diproses sementara di browser dan disimpan langsung ke database lokal browser Anda.</p>
+
+        <h3>B. Catatan Pengguna, Tag, dan Status Pipeline CRM</h3>
+        <p>Catatan, label kustom, dan status penawaran yang Anda ubah di Dashboard tersimpan secara privat di browser komputer Anda sendiri.</p>
+      </div>
+
+      <div class="card">
+        <h2>3. Penggunaan Izin (Permissions) Browser</h2>
+        <p>Ekstensi ini memerlukan izin berikut agar fungsinya dapat berjalan:</p>
+        <ul>
+          <li><code>storage</code> & <code>unlimitedStorage</code>: Digunakan untuk menyimpan dan membuka kembali data hasil crawl, pengaturan, dan catatan prospek di browser tanpa terbentur batas kuota.</li>
+          <li><code>tabs</code> & <code>scripting</code>: Digunakan untuk berinteraksi dengan tab Google Maps yang dibuka pengguna dan menjalankan script ekstraksi saat tombol Mulai ditekan.</li>
+          <li><code>clipboardWrite</code>: Digunakan untuk menyalin data prospek (telepon, alamat, koordinat) ke clipboard perangkat dengan satu klik.</li>
+          <li><code>optional_host_permissions</code> (<code>*://*/*</code>): Digunakan secara opsional hanya saat Anda mengaktifkan fitur pencarian email bisnis publik di website resmi tempat yang ditemukan.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>4. Berbagi Data, Penjualan, dan Monetisasi</h2>
+        <p>Kami menjunjung tinggi etika perlindungan privasi:</p>
+        <ul>
+          <li>Kami <strong>TIDAK menjual, menyewakan, atau memperdagangkan</strong> data atau prospek Anda kepada pihak ketiga atau pialang data (data broker).</li>
+          <li>Kami <strong>TIDAK melacak</strong> riwayat penelusuran web Anda di luar sesi pencarian direktori Google Maps.</li>
+          <li>Kami <strong>TIDAK menyisipkan script analitik pelacak perilaku atau jaringan iklan pihak ketiga</strong> di dalam ekstensi ini.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>5. Penyimpanan, Ekspor, dan Penghapusan Data</h2>
+        <p>Anda memegang kendali penuh atas data Anda:</p>
+        <ul>
+          <li><strong>Ekspor:</strong> Anda dapat mengekspor data kapan saja ke format CSV atau JSON dari halaman Dashboard.</li>
+          <li><strong>Hapus:</strong> Anda dapat menghapus data tertentu atau mengosongkan seluruh database lokal melalui tombol <em>Hapus Semua Data</em> di Dashboard.</li>
+          <li><strong>Uninstall:</strong> Jika Anda menghapus ekstensi dari Chrome, seluruh data di <code>chrome.storage.local</code> akan otomatis dihapus permanen oleh browser Google Chrome.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>6. Deklarasi Tujuan Tunggal (Single Purpose)</h2>
+        <p>Sesuai dengan Kebijakan Program Pengembang Chrome Web Store, <strong>Maps Directory Crawler</strong> memiliki tujuan tunggal yang jelas:</p>
+        <p><em>Memungkinkan pengguna mengekstrak, mengorganisir, dan mengelola daftar direktori bisnis publik dari hasil pencarian peta ke dalam dashboard produktivitas lokal.</em></p>
+      </div>
+
+      <div class="card">
+        <h2>7. Kontak Pengembang</h2>
+        <p>Jika Anda memiliki pertanyaan seputar Kebijakan Privasi ini, silakan hubungi pengembang melalui halaman isu GitHub:</p>
+        <p>GitHub: <a href="https://github.com/nannndev/gmaps-crawler/issues" target="_blank" rel="noopener">github.com/nannndev/gmaps-crawler/issues</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Maps Directory Crawler. Open-source & client-side software.</p>
+    <p><a href="https://github.com/nannndev/gmaps-crawler" target="_blank" rel="noopener">GitHub Repository</a> &bull; <a href="#top">Back to top</a></p>
+  </footer>
+
+  <script>
+    function setLanguage(lang) {
+      const enElements = document.querySelectorAll('.lang-en');
+      const idElements = document.querySelectorAll('.lang-id');
+      const btnEn = document.getElementById('btn-en');
+      const btnId = document.getElementById('btn-id');
+
+      if (lang === 'id') {
+        enElements.forEach(el => el.style.display = 'none');
+        idElements.forEach(el => el.style.display = 'block');
+        btnId.classList.add('active');
+        btnEn.classList.remove('active');
+        document.documentElement.lang = 'id';
+      } else {
+        enElements.forEach(el => el.style.display = 'block');
+        idElements.forEach(el => el.style.display = 'none');
+        btnEn.classList.add('active');
+        btnId.classList.remove('active');
+        document.documentElement.lang = 'en';
+      }
+    }
+  </script>
+</body>
+</html>
